@@ -13,7 +13,7 @@ object ControlServer {
 
     private var running = false
 
-    fun start(port: Int = 8080) {
+    fun start(port: Int = 9090) {
         if (running) return
         running = true
 
