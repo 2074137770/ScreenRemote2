@@ -14,7 +14,7 @@ class SwipeAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         instance = this
-        ControlServer.start(8080)
+        ControlServer.start(9090)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {}
