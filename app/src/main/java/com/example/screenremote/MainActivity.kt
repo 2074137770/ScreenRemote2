@@ -369,7 +369,7 @@ class MainActivity : AppCompatActivity() {
     private fun connectToHost(ip: String) {
         Thread {
             try {
-                socket = Socket(ip, 8080)
+                socket = Socket(ip, 9090)
                 writer = PrintWriter(socket?.getOutputStream(), true)
                 mainHandler.post { showControllerPanel() }
             } catch (e: Exception) {
