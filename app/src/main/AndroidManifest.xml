@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:label="平板刷视频遥控"
+        android:label="灵滑"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <activity
