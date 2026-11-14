@@ -21,22 +21,31 @@ class SwipeAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {}
+    
     override fun onInterrupt() {}
 
     fun swipe(direction: String) {
-        val dm = resources.displayMetrics
-        val w = dm.widthPixels
-        val h = dm.heightPixels
+        val w = resources.displayMetrics.widthPixels
+        val h = resources.displayMetrics.heightPixels
         val x = w / 2f
-        val startY = if (direction == "up") h * 0.8f else h * 0.2f
-        val endY = if (direction == "up") h * 0.2f else h * 0.8f
+        
+        var startY = h * 0.8f
+        var endY = h * 0.2f
+        
+        if (direction != "up") {
+            startY = h * 0.2f
+            endY = h * 0.8f
+        }
 
         val path = Path()
         path.moveTo(x, startY)
         path.lineTo(x, endY)
 
         val stroke = GestureDescription.StrokeDescription(path, 0, 300)
-        val gesture = GestureDescription.Builder().addStroke(stroke).build()
+        val builder = GestureDescription.Builder()
+        builder.addStroke(stroke)
+        val gesture = builder.build()
+
         dispatchGesture(gesture, null, null)
     }
 
@@ -47,11 +56,14 @@ class SwipeAccessibilityService : AccessibilityService() {
 
         val path = Path()
         path.moveTo(x, y)
+        
         val stroke = GestureDescription.StrokeDescription(path, 0, 50)
-        val gesture = GestureDescription.Builder().addStroke(stroke).build()
-        
+        val builder = GestureDescription.Builder()
+        builder.addStroke(stroke)
+        val gesture = builder.build()
+
         dispatchGesture(gesture, null, null)
-        
+
         android.os.Handler(mainLooper).postDelayed({
             dispatchGesture(gesture, null, null)
         }, 100)
@@ -64,23 +76,50 @@ class SwipeAccessibilityService : AccessibilityService() {
 
         val path = Path()
         path.moveTo(x, y)
-        val stroke = GestureDescription.StrokeDescription(path, 0, 50)
-        val gesture = GestureDescription.Builder().addStroke(stroke).build()
         
+        val stroke = GestureDescription.StrokeDescription(path, 0, 50)
+        val builder = GestureDescription.Builder()
+        builder.addStroke(stroke)
+        val gesture = builder.build()
+
         dispatchGesture(gesture, null, null)
     }
 
     fun changeVolume(up: Boolean) {
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val direction = if (up) AudioManager.ADJUST_RAISE else AudioManager.ADJUST_LOWER
-        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, direction, AudioManager.FLAG_SHOW_UI)
+        var direction = AudioManager.ADJUST_LOWER
+        
+        if (up) {
+            direction = AudioManager.ADJUST_RAISE
+        }
+        
+        audioManager.adjustStreamVolume(
+            AudioManager.STREAM_MUSIC, 
+            direction, 
+            AudioManager.FLAG_SHOW_UI
+        )
     }
 
     fun changeBrightness(up: Boolean) {
         try {
-            val currentBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
-            val newBrightness = if (up) (currentBrightness + 30).coerceAtMost(255) else (currentBrightness - 30).coerceAtLeast(10)
-            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, newBrightness)
+            val current = Settings.System.getInt(
+                contentResolver, 
+                Settings.System.SCREEN_BRIGHTNESS
+            )
+            
+            var target = current - 30
+            if (up) {
+                target = current + 30
+            }
+            
+            if (target > 255) target = 255
+            if (target < 10) target = 10
+            
+            Settings.System.putInt(
+                contentResolver, 
+                Settings.System.SCREEN_BRIGHTNESS, 
+                target
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         }
