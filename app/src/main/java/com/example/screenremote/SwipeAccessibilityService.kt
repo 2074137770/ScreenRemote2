@@ -21,7 +21,9 @@ class SwipeAccessibilityService : AccessibilityService() {
 
     override fun onInterrupt() {}
 
-    fun swipe(direction: String) {
+    fun swipe(direction: S
+        android.widget.Toast.makeText(this, "收到滑动指令: $direction", android.widget.Toast.LENGTH_SHORT).show()// 加上这一行，验证指令是否到达// 加上这一行，验证指令是否到达
+
         val dm = resources.displayMetrics
         val w = dm.widthPixels
         val h = dm.heightPixels
