@@ -28,17 +28,17 @@ class SwipeAccessibilityService : AccessibilityService() {
         val w = dm.widthPixels
         val h = dm.heightPixels
         val x = w / 2f
-        
         val startY = if (direction == "up") h * 0.8f else h * 0.2f
         val endY = if (direction == "up") h * 0.2f else h * 0.8f
 
-        val path = Path().apply {
-            moveTo(x, startY)
-            lineTo(x, endY)
-        }
-        
+        val path = Path()
+        path.moveTo(x, startY)
+        path.lineTo(x, endY)
+
         val stroke = GestureDescription.StrokeDescription(path, 0, 300)
-        val gesture = GestureDescription.Builder().addStroke(stroke).build()
+        val builder = GestureDescription.Builder()
+        builder.addStroke(stroke)
+        val gesture = builder.build()
         
         dispatchGesture(gesture, null, null)
     }
@@ -48,13 +48,17 @@ class SwipeAccessibilityService : AccessibilityService() {
         val x = dm.widthPixels / 2f
         val y = dm.heightPixels / 2f
 
-        val path = Path().apply { moveTo(x, y) }
+        val path = Path()
+        path.moveTo(x, y)
         val stroke = GestureDescription.StrokeDescription(path, 0, 50)
+        val builder = GestureDescription.Builder()
+        builder.addStroke(stroke)
+        val gesture = builder.build()
         
-        dispatchGesture(GestureDescription.Builder().addStroke(stroke).build(), null, null)
+        dispatchGesture(gesture, null, null)
         
         android.os.Handler(mainLooper).postDelayed({
-            dispatchGesture(GestureDescription.Builder().addStroke(stroke).build(), null, null)
+            dispatchGesture(gesture, null, null)
         }, 100)
     }
 
@@ -63,10 +67,14 @@ class SwipeAccessibilityService : AccessibilityService() {
         val x = dm.widthPixels / 2f
         val y = dm.heightPixels * 0.85f
 
-        val path = Path().apply { moveTo(x, y) }
-        dispatchGesture(GestureDescription.Builder().addStroke(
-            GestureDescription.StrokeDescription(path, 0, 50)
-        ).build(), null, null)
+        val path = Path()
+        path.moveTo(x, y)
+        val stroke = GestureDescription.StrokeDescription(path, 0, 50)
+        val builder = GestureDescription.Builder()
+        builder.addStroke(stroke)
+        val gesture = builder.build()
+        
+        dispatchGesture(gesture, null, null)
     }
 
     fun changeVolume(up: Boolean) {
